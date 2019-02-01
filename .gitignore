@@ -4,6 +4,7 @@
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
+VR-racing-game/Assets/External Assets/
 
 # Never ignore Asset meta data
 ![Aa]ssets/**/*.meta
@@ -49,3 +50,4 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+VR-racing-game/Assets/External Assets.meta
