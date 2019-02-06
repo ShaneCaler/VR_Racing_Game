@@ -2,6 +2,8 @@
 {
 	using UnityEngine;
 	using System.Collections.Generic;
+	using VRTK.Controllables;
+
 	public class KartV3 : MonoBehaviour
 	{
 
@@ -9,6 +11,9 @@
 		private float triggerAxis;
 		private Rigidbody rb;
 		private int count = 0;
+		private float steerValue;
+
+		public VRTK_BaseControllable steeringWheel;
 		public List<WheelCollider> throttlingWheels;
 		public List<GameObject> steeringWheels;
 		public List<GameObject> wheelMeshes;
@@ -24,6 +29,18 @@
 			Physics.IgnoreLayerCollision(9, 10);
 			Physics.IgnoreLayerCollision(9, 11);
 
+		}
+
+		protected virtual void OnEnable()
+		{
+			steeringWheel = (steeringWheel == null ? GetComponent<VRTK_BaseControllable>() : steeringWheel);
+			steeringWheel.ValueChanged += ValueChanged;
+		}
+
+		protected virtual void ValueChanged(object sender, ControllableEventArgs e)
+		{
+			//Debug.Log("value of e: " + e.value.ToString("F1"));
+			steerValue = e.value;
 		}
 
 		public void ResetCar()
@@ -52,20 +69,17 @@
 
 			foreach(WheelCollider wheel in throttlingWheels)
 			{
-				Vector3 pos;
-				Quaternion rot;
-				wheel.motorTorque = strengthCoefficient * touchAxis.y * Time.deltaTime;
-				//wheel.GetWorldPose(out pos, out rot);
-				//wheelMeshes[count].transform.rotation = rot;
-				//count++;
+				wheel.motorTorque = strengthCoefficient * triggerAxis * Time.deltaTime;
 			}
 
 			count = 0;
 
 			foreach(GameObject wheel in steeringWheels)
 			{
-				wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * touchAxis.x;
-				wheel.transform.localEulerAngles = new Vector3(0f, touchAxis.x * maxTurn, 0f);
+				//wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * touchAxis.x;
+				wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * steerValue;
+				Debug.Log("Steer angle: " + wheel.GetComponent<WheelCollider>().steerAngle.ToString());
+				wheel.transform.localEulerAngles = new Vector3(0f, steerValue * maxTurn, 0f);
 			}
 
 			foreach (GameObject wheelMesh in wheelMeshes)
