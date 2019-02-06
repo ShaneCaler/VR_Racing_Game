@@ -5,11 +5,11 @@
     public class Kart_Controller : MonoBehaviour
     {
         public GameObject kart;
-        private Kart kartScript;
+        private KartV3 kartScript;
 
         private void Start()
         {
-            kartScript = kart.GetComponent<Kart>();
+            kartScript = kart.GetComponent<KartV3>();
             GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
             GetComponent<VRTK_ControllerEvents>().TouchpadAxisChanged += new ControllerInteractionEventHandler(DoTouchpadAxisChanged);
 
@@ -21,7 +21,7 @@
 
         private void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
         {
-            Debug.Log("SetTouchAxis called with value of " + e.touchpadAxis);
+            //Debug.Log("SetTouchAxis called with value of " + e.touchpadAxis);
             kartScript.SetTouchAxis(e.touchpadAxis);
         }
 
