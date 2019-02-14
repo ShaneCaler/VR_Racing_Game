@@ -23,7 +23,8 @@
 		public float brakeStrength = 10f;
 		public float maxTurn = 40f; // in degrees
 		public float wheelSpinSpeed = 5f;
-		public int healthPoints = 100;
+		public float healthPoints = 100f;
+		public int maxPowerups = 2;
 		public Transform centerOfMass;
 		
 		void Start()
@@ -63,12 +64,19 @@
 		}
 
 		// Power Up functions
-		public void SetTorqueStrength(float data)
+		public void ApplySpeedBoost(float str, float dur)
 		{
-			torqueStrength += data;
+			StartCoroutine(HandleSpeedBoost(str, dur));
 		}
 
-		public void SetHealthPoints(int data)
+		IEnumerator HandleSpeedBoost(float str, float dur)
+		{
+			torqueStrength += str;
+			yield return new WaitForSeconds(dur);
+			torqueStrength -= str;
+		}
+
+		public void SetHealthPoints(float data)
 		{
 			healthPoints += data;
 		}
@@ -76,15 +84,8 @@
 		public void ApplyOvershield(GameObject overshield, float duration)
 		{
 			Debug.Log("Applying Overshield...");
-			Instantiate(overshield, transform.position, Quaternion.identity);
-			overshield.transform.parent = transform;
-			StartCoroutine(WaitToDestroyShield(overshield, duration));
-		}
-
-		IEnumerator WaitToDestroyShield(GameObject overshield, float duration)
-		{
-			yield return new WaitForSeconds(duration);
-			Destroy(overshield);
+			GameObject os = Instantiate(overshield, transform.position, Quaternion.identity);
+			os.transform.parent = transform;
 		}
 
 		private void Awake()
