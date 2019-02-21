@@ -58,31 +58,6 @@
 				EditorGUILayout.PropertyField(overshieldDurProp);
 			}
 
-			//powerUpTypes = (PowerUpTypes)EditorGUILayout.EnumPopup("Types: ", powerUpTypes);
-
-			/* switch (powerUpTypes)
-		   {
-			   case PowerUpTypes.SpeedBoost:
-				   EditorGUILayout.PropertyField(powerUpTypeProp);
-				   EditorGUILayout.PropertyField(speedBoostStrProp);
-				   EditorGUILayout.PropertyField(speedBoostDurProp);
-				   //_target.powerUpType = PowerUpTypes.SpeedBoost;
-				   //_target.speedBoostStrength = EditorGUILayout.FloatField("Speed Boost Strength:", _target.speedBoostStrength);
-				   //_target.speedBoostDuration = EditorGUILayout.FloatField("Speed Boost Duration:", _target.speedBoostDuration);
-				   break;
-			   case PowerUpTypes.HealthBoost:
-				   //_target.powerUpType = PowerUpTypes.HealthBoost;
-				   //_target.healthBoostStrength = EditorGUILayout.IntField("Health Boost Strength:", _target.healthBoostStrength);
-				   break;
-			   case PowerUpTypes.Overshield:
-				   //_target.powerUpType = PowerUpTypes.Overshield;
-				   //_target.overshieldGO = (GameObject)EditorGUILayout.ObjectField("Overshield Game Object:", _target.overshieldGO, typeof(GameObject), false);
-				   //_target.overshieldDuration = EditorGUILayout.FloatField("Overshield Duration:", _target.overshieldDuration);
-				   break;
-			   default:
-				   return;
-		   } */
-
 			if (GUI.changed)
 			{
 				EditorUtility.SetDirty(target);
@@ -93,21 +68,21 @@
 			_object.ApplyModifiedProperties();
 		}
 
-		void OnFocus()
-		{
-			if (EditorPrefs.HasKey("speedBoostToggle"))
-				speedBoostToggle = EditorPrefs.GetBool("speedBoostToggle");
-		}
+		//void OnFocus()
+		//{
+		//	if (EditorPrefs.HasKey("speedBoostToggle"))
+		//		speedBoostToggle = EditorPrefs.GetBool("speedBoostToggle");
+		//}
 
-		void OnLostFocus()
-		{
-			EditorPrefs.SetBool("speedBoostToggle", speedBoostToggle);
-		}
+		//void OnLostFocus()
+		//{
+		//	EditorPrefs.SetBool("speedBoostToggle", speedBoostToggle);
+		//}
 
-		void OnDestroy()
-		{
-			EditorPrefs.SetBool("speedBoostToggle", speedBoostToggle);
-		}
+		//void OnDestroy()
+		//{
+		//	EditorPrefs.SetBool("speedBoostToggle", speedBoostToggle);
+		//}
 	}
 }
 

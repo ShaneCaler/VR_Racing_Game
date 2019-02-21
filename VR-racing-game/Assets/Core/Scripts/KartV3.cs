@@ -10,10 +10,12 @@
 
 		private Vector2 touchAxis;
 		private float triggerAxis;
+		private int controllerRef;
 		private Rigidbody rb;
-		private int count = 0;
 		private float steerValue;
 		private float brake = 0f;
+		private Lighting_Manager lm;
+		private Camera_Controller cam;
 
 		public VRTK_BaseControllable steeringWheel;
 		public List<WheelCollider> throttlingWheels;
@@ -33,7 +35,9 @@
 			//rb.centerOfMass = centerOfMass.position;
 			Physics.IgnoreLayerCollision(9, 10);
 			Physics.IgnoreLayerCollision(9, 11);
-
+			OVRManager.display.RecenterPose();
+			lm = GetComponent<Lighting_Manager>();
+			cam = GetComponentInChildren<Camera_Controller>();
 		}
 
 		protected virtual void OnEnable()
@@ -63,6 +67,13 @@
 			triggerAxis = data;
 		}
 
+		public void SetTriggerAxis(float data, VRTK_ControllerReference controller)
+		{
+			triggerAxis = data;
+			Debug.Log("Controller: " + controller.index);
+			controllerRef = (int)controller.index;
+		}
+		
 		// Power Up functions
 		public void ApplySpeedBoost(float str, float dur)
 		{
@@ -95,41 +106,47 @@
 
 		void Update()
 		{
-			if(OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0f && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0f)
+			/* if(OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0f && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0f)
 			{
+				lm.ToggleBrakeLights();
 				brake = triggerAxis;
 			}
 			else
 			{
+				lm.ToggleBrakeLights();
 				brake = 0f;
-			}
+			} */
 		}
 
 		void FixedUpdate()
 		{
-			Debug.Log("Trigger axis = " + triggerAxis.ToString() + " and touch axis = y: " + touchAxis.y + " / x: " + touchAxis.x);
+			//Debug.Log("Trigger axis = " + triggerAxis.ToString() + " and touch axis = y: " + touchAxis.y + " / x: " + touchAxis.x);
 
 			// move forward and brake
 			foreach(WheelCollider wheel in throttlingWheels)
 			{
-				// apply torque
-				wheel.motorTorque = torqueStrength * triggerAxis * Time.deltaTime;
-
-				// brake
-				wheel.brakeTorque = brakeStrength * brake * Time.deltaTime;
+				if (controllerRef == 0)
+				{
+					Debug.Log("Applying brake torque");
+					wheel.motorTorque = 0f;
+					wheel.brakeTorque = brakeStrength * Time.deltaTime;
+				}
+				else
+				{
+					Debug.Log("Applying motor torque");
+					wheel.brakeTorque = 0f;
+					wheel.motorTorque = torqueStrength * triggerAxis * Time.deltaTime;
+				}
 			}
-
-			
-			count = 0;
 
 			// steer
 			foreach(GameObject wheel in steeringWheels)
 			{
 				wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * touchAxis.x;
 				//wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * steerValue * Time.deltaTime;
-				Debug.Log("Steer angle: " + wheel.GetComponent<WheelCollider>().steerAngle.ToString());
+				//Debug.Log("Steer angle: " + wheel.GetComponent<WheelCollider>().steerAngle.ToString());
 				//wheel.transform.localEulerAngles = new Vector3(0f, steerValue * maxTurn * Time.deltaTime, 0f);
-				wheel.transform.localEulerAngles = new Vector3(0f, touchAxis.x * maxTurn * Time.deltaTime, 0f);
+				wheel.transform.localEulerAngles = new Vector3(0f, touchAxis.x * maxTurn, 0f);
 
 			}
 
@@ -138,7 +155,7 @@
 			{
 				wheelMesh.transform.Rotate(rb.velocity.magnitude 
 					* (transform.InverseTransformDirection(rb.velocity).z >= 0 ? 1 : -1) * wheelSpinSpeed
-					/ (2 * Mathf.PI * .35f), 0f, 0f); // .33 = radius
+					/ (2 * Mathf.PI * .33f), 0f, 0f); // .33 = radius
 			}
 		}
 	}

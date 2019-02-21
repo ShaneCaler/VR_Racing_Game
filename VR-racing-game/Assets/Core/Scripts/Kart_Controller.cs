@@ -27,7 +27,7 @@
 
 		private void DoTriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
 		{
-			kartScript.SetTriggerAxis(e.buttonPressure);
+			kartScript.SetTriggerAxis(e.buttonPressure, e.controllerReference);
 		}
 
 		private void DoTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
