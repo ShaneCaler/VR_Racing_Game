@@ -12,6 +12,8 @@ Useful skills learned thus far:
   - Used wheel colliders and rigidbodies to control the movement of the kart.
 - Unity Shader Graph
   - Created several simple shaders to use as power-ups 
+  - 3 of the shaders so far: <a href="https://imgur.com/a/bhucOxS">Hologram, Ripple and Dissolve
+
 
 ## Links
 Trello: https://trello.com/b/GrUn485m/vr-racing-game
