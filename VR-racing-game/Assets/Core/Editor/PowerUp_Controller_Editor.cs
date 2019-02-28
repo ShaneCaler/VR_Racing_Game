@@ -13,7 +13,7 @@
 		[SerializeField]
 		private bool speedBoostToggle;
 		private SerializedObject _object;
-		private SerializedProperty kartProp, speedBoostStrProp, speedBoostDurProp,
+		private SerializedProperty kartProp, destroyDelayProp, speedBoostStrProp, speedBoostDurProp,
 			 powerUpTypeProp, healthBoostStrProp, overshieldGOProp, overshieldDurProp;
 
 		[SerializeField]
@@ -22,6 +22,7 @@
 		{
 			_object = new SerializedObject(target);
 			kartProp = _object.FindProperty("kart");
+			destroyDelayProp = _object.FindProperty("destroyDelay");
 			speedBoostStrProp = _object.FindProperty("speedBoostStrength");
 			speedBoostDurProp = _object.FindProperty("speedBoostDuration");
 			powerUpTypeProp = _object.FindProperty("powerUpType");
@@ -36,6 +37,7 @@
 			_object.Update();
 			PowerUp_Controller _target = (PowerUp_Controller)target;
 
+			EditorGUILayout.PropertyField(destroyDelayProp);
 			_target.speedBoostToggle = EditorGUILayout.Toggle("Speed Boost", _target.speedBoostToggle);
 			_target.healthBoostToggle = EditorGUILayout.Toggle("Health Boost", _target.healthBoostToggle);
 			_target.overshieldToggle = EditorGUILayout.Toggle("Overshield", _target.overshieldToggle);

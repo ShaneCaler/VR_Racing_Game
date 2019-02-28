@@ -7,7 +7,6 @@
 
 	public class KartV3 : MonoBehaviour
 	{
-
 		private Vector2 touchAxis;
 		private float triggerAxis;
 		private int controllerRef;
@@ -16,6 +15,7 @@
 		private float brake = 0f;
 		private Lighting_Manager lm;
 		private Camera_Controller cam;
+		private UI_Manager uim;
 
 		public VRTK_BaseControllable steeringWheel;
 		public List<WheelCollider> throttlingWheels;
@@ -38,6 +38,7 @@
 			OVRManager.display.RecenterPose();
 			lm = GetComponent<Lighting_Manager>();
 			cam = GetComponentInChildren<Camera_Controller>();
+			uim = GetComponentInChildren<UI_Manager>();
 		}
 
 		protected virtual void OnEnable()
@@ -48,7 +49,7 @@
 
 		protected virtual void ValueChanged(object sender, ControllableEventArgs e)
 		{
-			//Debug.Log("value of e: " + e.value.ToString("F1"));
+			// Used for steering wheel controls
 			steerValue = e.value;
 		}
 
@@ -70,7 +71,6 @@
 		public void SetTriggerAxis(float data, VRTK_ControllerReference controller)
 		{
 			triggerAxis = data;
-			Debug.Log("Controller: " + controller.index);
 			controllerRef = (int)controller.index;
 		}
 		
@@ -106,16 +106,7 @@
 
 		void Update()
 		{
-			/* if(OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger) > 0f && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger) == 0f)
-			{
-				lm.ToggleBrakeLights();
-				brake = triggerAxis;
-			}
-			else
-			{
-				lm.ToggleBrakeLights();
-				brake = 0f;
-			} */
+			uim.UpdateSpeedText(transform.InverseTransformVector(rb.velocity).z);
 		}
 
 		void FixedUpdate()
@@ -130,6 +121,7 @@
 					Debug.Log("Applying brake torque");
 					wheel.motorTorque = 0f;
 					wheel.brakeTorque = brakeStrength * Time.deltaTime;
+					//lm.ToggleBrakeLights();
 				}
 				else
 				{

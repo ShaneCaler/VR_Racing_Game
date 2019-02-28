@@ -23,6 +23,7 @@
 	{
 		public KartV3 kart;
 		public PowerUpTypes powerUpType;
+		public float destroyDelay = 2f;
 		public float speedBoostStrength = 5000f;
 		public float speedBoostDuration = 5f;
 		public float healthBoostStrength = 25f;
@@ -30,7 +31,6 @@
 		public float overshieldDuration = 10f;
 
 		public bool speedBoostToggle, healthBoostToggle, overshieldToggle;
-		public GameObject pickupEffect;
 
 		void OnTriggerEnter(Collider other)
 		{
@@ -45,7 +45,7 @@
 		void Pickup(Collider player)
 		{
 			// Spawn particle effect
-			Instantiate(pickupEffect, transform.position, transform.rotation);
+			//Instantiate(pickupEffect, transform.position, transform.rotation);
 
 			// Apply effect
 			switch (powerUpType)
@@ -67,7 +67,7 @@
 					return;
 			}
 
-			Destroy(gameObject);
+			Destroy(gameObject, destroyDelay);
 		}
 
 		// Update is called once per frame

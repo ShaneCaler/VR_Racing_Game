@@ -21,10 +21,16 @@ public class Camera_Controller : MonoBehaviour
 
 	private int numOfCamModes = System.Enum.GetValues(typeof(CamMode)).Length;
 	private int prevCamMode;
+	private OvrAvatar avatar;
 
 	[HideInInspector] public CamMode currCamMode;
 
-    void Update()
+	void Start()
+	{
+		avatar = GetComponentInParent<OvrAvatar>();
+	}
+
+	void Update()
     {
 		if (Input.GetKeyDown(KeyCode.C)) // OVRInput.GetDown(OVRInput.RawButton.B)
 		{
@@ -36,25 +42,34 @@ public class Camera_Controller : MonoBehaviour
 		{
 			case CamMode.FirstPerson:
 				Debug.Log("Cam mode is now: " + currCamMode.ToString());
+				avatar.ShowFirstPerson = true;
+				avatar.ShowThirdPerson = false;
 				transform.position = focus.transform.position +
 					 focus.transform.TransformDirection(new Vector3(len, h2, d2));
 				transform.rotation = focus.transform.rotation;
 				break;
 			case CamMode.ThirdPerson:
 				Debug.Log("Cam mode is now: " + currCamMode.ToString());
+				avatar.ShowFirstPerson = false;
+				avatar.ShowThirdPerson = true;
 				transform.position = Vector3.Lerp(transform.position, focus.transform.position +
 												focus.transform.TransformDirection(new Vector3(0f, height, -distance)),
 												dampening * Time.deltaTime);
-				transform.LookAt(focus.transform);
+				//StartCoroutine(WaitToLookAt());
 				break;
 			default:
 				Debug.Log("Cam mode is now: " + currCamMode.ToString());
 				transform.position = Vector3.Lerp(transform.position, focus.transform.position +
 												focus.transform.TransformDirection(new Vector3(0f, height, -distance)), 
 												dampening * Time.deltaTime);
-				transform.LookAt(focus.transform);
+				//StartCoroutine(WaitToLookAt());
 				break;
 		}
-		
     }
+
+	IEnumerator WaitToLookAt()
+	{
+		yield return new WaitForSeconds(2f);
+		transform.LookAt(focus.transform);
+	}
 }
