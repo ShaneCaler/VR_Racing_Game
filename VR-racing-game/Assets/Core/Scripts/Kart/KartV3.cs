@@ -114,39 +114,39 @@
 			//Debug.Log("Trigger axis = " + triggerAxis.ToString() + " and touch axis = y: " + touchAxis.y + " / x: " + touchAxis.x);
 
 			// move forward and brake
-			foreach(WheelCollider wheel in throttlingWheels)
+			for(int i = 0; i < throttlingWheels.Count; i++)
 			{
 				if (controllerRef == 0)
 				{
 					Debug.Log("Applying brake torque");
-					wheel.motorTorque = 0f;
-					wheel.brakeTorque = brakeStrength * Time.deltaTime;
+					throttlingWheels[i].motorTorque = 0f;
+					throttlingWheels[i].brakeTorque = brakeStrength * Time.deltaTime;
 					//lm.ToggleBrakeLights();
 				}
 				else
 				{
 					Debug.Log("Applying motor torque");
-					wheel.brakeTorque = 0f;
-					wheel.motorTorque = torqueStrength * triggerAxis * Time.deltaTime;
+					throttlingWheels[i].brakeTorque = 0f;
+					throttlingWheels[i].motorTorque = torqueStrength * triggerAxis * Time.deltaTime;
 				}
 			}
 
 			// steer
-			foreach(GameObject wheel in steeringWheels)
+			for(int i = 0; i < steeringWheels.Count; i++)
 			{
-				wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * touchAxis.x;
+				steeringWheels[i].GetComponent<WheelCollider>().steerAngle = maxTurn * touchAxis.x;
 				//wheel.GetComponent<WheelCollider>().steerAngle = maxTurn * steerValue * Time.deltaTime;
 				//Debug.Log("Steer angle: " + wheel.GetComponent<WheelCollider>().steerAngle.ToString());
 				//wheel.transform.localEulerAngles = new Vector3(0f, steerValue * maxTurn * Time.deltaTime, 0f);
-				wheel.transform.localEulerAngles = new Vector3(0f, touchAxis.x * maxTurn, 0f);
+				steeringWheels[i].transform.localEulerAngles = new Vector3(0f, touchAxis.x * maxTurn, 0f);
 
 			}
 
 			// rotate wheels
-			foreach (GameObject wheelMesh in wheelMeshes)
+			for (int i = 0; i < wheelMeshes.Count; i++)
 			{
-				wheelMesh.transform.Rotate(rb.velocity.magnitude 
-					* (transform.InverseTransformDirection(rb.velocity).z >= 0 ? 1 : -1) * wheelSpinSpeed
+				wheelMeshes[i].transform.Rotate(rb.velocity.magnitude
+					* (transform.InverseTransformDirection(rb.velocity).z >= 0 ? 1 : -1) * 5f
 					/ (2 * Mathf.PI * .33f), 0f, 0f); // .33 = radius
 			}
 		}
