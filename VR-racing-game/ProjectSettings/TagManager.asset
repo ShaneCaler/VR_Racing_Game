@@ -5,6 +5,32 @@ TagManager:
   serializedVersion: 2
   tags:
   - Terrain
+  - target
+  - ground
+  - wall
+  - block
+  - goal
+  - agent
+  - banana
+  - badBanana
+  - stone
+  - pyramid
+  - walkableSurface
+  - blueAgent
+  - blueGoal
+  - redGoal
+  - ball
+  - orangeGoal
+  - orangeBlock
+  - redBlock
+  - iWall
+  - switchOff
+  - pit
+  - StartLine
+  - switchOn
+  - frozenAgent
+  - Waypoint
+  - Obstacle
   layers:
   - Default
   - TransparentFX

@@ -29,7 +29,12 @@ public class AIEngine : MonoBehaviour
 	public float frAngledSensorAvoidMultiplier = .5f;
 	public Vector3 frSensorPosition = new Vector3(.3f, 0f, .5f);
 
-	
+	// test
+	private float cautiousAngularVelocityFactor = 30f;
+	private float cautiousMaxAngle = 50f;
+	private float cautiousSpeedFactor = 0.05f;
+	// end test
+
 	private List<Transform> nodes;
 	private int currNode = 0;
 	private Rigidbody rb;
@@ -140,7 +145,7 @@ public class AIEngine : MonoBehaviour
 		// check if we are avoiding something
 		if (isAvoiding)
 		{
-			targetSteerAngle = maxSteerAngle * avoidMultiplier;
+			targetSteerAngle = maxSteerAngle * avoidMultiplier * Time.deltaTime;
 		}
 
 	}
@@ -177,13 +182,51 @@ public class AIEngine : MonoBehaviour
 
 	private void Navigate()
 	{
-		if (Vector3.Distance(transform.position, nodes[currNode].position) < 2f)
+		float tempBrakeStrength = brakeStrength;
+
+		if (Vector3.Distance(transform.position, nodes[currNode].position) < 1.5f)
 		{
 			if (currNode == nodes.Count - 1)
 				currNode = 0;
 			else
+			{
 				currNode++;
+			}
+
+			var targetRotation = Quaternion.LookRotation(nodes[currNode].position - transform.position);
+			transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5f * Time.deltaTime);
 		}
+
+		/* float desiredSpeed = maxSpeed;
+		float approachingCornerAngle = Vector3.Angle(nodes[currNode].forward, transform.forward);
+		float spinningAngle = rb.angularVelocity.magnitude * cautiousAngularVelocityFactor;
+		float cautiousnessRequired = Mathf.InverseLerp(0, cautiousMaxAngle, 
+			Mathf.Max(spinningAngle, 
+			approachingCornerAngle));
+
+		desiredSpeed = Mathf.Lerp(maxSpeed, maxSpeed * cautiousSpeedFactor,
+													  cautiousnessRequired);
+		Debug.Log("Desired speed: " + desiredSpeed); */
+		
+		float forwardSpeed = GetForwardSpeedToTarget(nodes[currNode].transform);
+		if (forwardSpeed < .9f && currSpeed > 10f)
+		{
+			isBraking = true;
+		}
+		else
+		{
+			isBraking = false;
+		}
+
+		Debug.Log("Forward Speed to Target: " + forwardSpeed
+		+ "/ Current Speed: " + currSpeed
+		+ "/ Brake Strength: " + brakeStrength);
+
+	}	
+
+	private float GetForwardSpeedToTarget(Transform target)
+	{
+		return (1 - (Mathf.Clamp(Vector3.Angle(transform.forward, (target.position - transform.position).normalized), 0, 90) / 90));
 	}
 
 	private void Braking()
@@ -191,17 +234,18 @@ public class AIEngine : MonoBehaviour
 		if (isBraking)
 		{
 			ToggleBrakeLights(2);
-			for (int i = 0; i < brakingWheels.Length; i++)
+			for (int i = 0; i < throttlingWheels.Length; i++)
 			{
-				brakingWheels[i].brakeTorque = brakeStrength;
+				throttlingWheels[i].motorTorque = 0f;
+				throttlingWheels[i].brakeTorque = brakeStrength;
 			}
 		}
 		else
 		{
 			ToggleBrakeLights(0);
-			for (int i = 0; i < brakingWheels.Length; i++)
+			for (int i = 0; i < throttlingWheels.Length; i++)
 			{
-				brakingWheels[i].brakeTorque = 0f;
+				throttlingWheels[i].brakeTorque = 0f;
 			}
 		}
 	}
